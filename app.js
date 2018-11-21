@@ -3,15 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 const axios = require('axios');
-const listOfCommands = [
-    '/dialgo',
-    '/pizza',
-    '/relaja',
-    '/comparte',
-    '/opina',
-    '/ataca',
-    '/rh'
-];
+import { listOfCommands, interactions } from './commands';
 
 app.use(bodyParser.json());
 app.use(
@@ -29,38 +21,17 @@ app.post('/new-message', function(req, res) {
     const { message } = req.body;
 
     if (!message) {
-        return res.status(400).end('payload is undefined!');
+        return res.end('message is undefined!');
     }
 
-    if (listOfCommands.includes(message.text.toLowerCase()) < 1) {
-        // axios
-        //     .post(
-        //         `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
-        //         {
-        //             chat_id: message.chat.id,
-        //             text: `Uhm... I'm not smart enough to determine what do you mean by that. Try another command :)`
-        //         }
-        //     )
-        //     .then(response => {
-        //         console.log('Invalid command : ', response);
-        //         res.status(404).end('command not found');
-        //         return res.status(404).end('command not found');
-        //     })
-        //     .catch(err => {
-        //         console.log('Error : ' + err);
-        //         res.status(500).end('Error : ' + err);
-        //         return res.status(404).end('command not found');
-        //     });
-
-            return res.status(404).end('command not found');
-
-    } else {
+    //interact with pedro by using commands.
+    if (listOfCommands.find(content => message.text.toLowerCase().includes(content)) !== undefined) {
         axios
             .post(
-                `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
+                `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
                 {
                     chat_id: message.chat.id,
-                    text: 'Hey, this is Pedro. ' + message.text
+                    text: 'Hey, I am Pedro bot :) '
                 }
             )
             .then(response => {
@@ -68,9 +39,61 @@ app.post('/new-message', function(req, res) {
                 res.status(200).end('ok');
             })
             .catch(err => {
-                console.log('Error : ' + err);
+                console.log('Error on posting message : ' + err);
                 res.status(500).end('Error : ' + err);
             });
+
+    } 
+    
+    //interact with pedro by custom interactions.
+    if (message.text.toLowerCase().startsWith('pedro') 
+        || message.text.toLowerCase().startsWith(process.env.PEDRO_BOT_NAME)) {
+
+            const caller = message.text.toLowerCase().startsWith('pedro') ? 'pedro': process.env.PEDRO_BOT_NAME;
+            let actualInstruction = message.text.toLowerCase().substr(caller.length).trimLeft();
+            let botResponse = interactions.find(interaction => interaction.instruction.includes(actualInstruction));
+
+            if (botResponse !== undefined) {
+                axios
+                    .post(
+                        `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                        {
+                            chat_id: message.chat.id,
+                            text: botResponse.response.toString()
+                        }
+                    )
+                    .then(response => {
+                        console.log('Message posted : ', response);
+                        res.status(200).end('ok');
+                    })
+                    .catch(err => {
+                        console.log('Error on posting message : ' + err);
+                        res.status(500).end('Error : ' + err);
+                    });
+
+            } else {
+                axios
+                    .post(
+                        `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                        {
+                            chat_id: message.chat.id,
+                            text: 'Me dijiste algo mmg?'
+                        }
+                    )
+                    .then(response => {
+                        console.log('Message posted : ', response);
+                        res.status(200).end('ok');
+                    })
+                    .catch(err => {
+                        console.log('Error on posting message : ' + err);
+                        res.status(500).end('Error : ' + err);
+                    });
+
+                return res.status(404).end('command not found : ' + actualInstruction);          
+            }
+    } 
+    else {
+        return res.status(404).end('neither command nor instruction was found');
     }
 });
 
