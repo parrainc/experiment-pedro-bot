@@ -32,7 +32,7 @@ app.post('/new-message', function(req, res) {
         return res.status(400).end('payload is undefined!');
     }
 
-    if (listOfCommands.filter(command => command.endsWith(message.text.toLowerCase())) < 1) {
+    if (listOfCommands.filter(command => command.endsWith(message.toLowerCase())) < 1) {
         axios
             .post(
                 `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
