@@ -12,7 +12,8 @@ app.use(
 );
 
 app.get('/', function(req, resp) {
-    document.write('Hello, this is pedro bot home page.');
+    console.log('This is Pedro bot home pages');
+    resp.end('nothing to do here');
 });
 
 app.post('/new-message', function(req, res) {
