@@ -38,29 +38,37 @@ app.post('/new-message', function(req, res) {
                 `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
                 {
                     chat_id: message.chat.id,
-                    text: `Uhm... I'm not enough smart to determine what do you mean by that. 
-                    Try another command :)`
+                    text: `Uhm... I'm not smart enough to determine what do you mean by that. Try another command :)`
                 }
-            );
+            )
+            .then(response => {
+                console.log('Invalid command : ', response);
+                res.status(404).end('command not found');
+            })
+            .catch(err => {
+                console.log('Error : ' + err);
+                res.status(500).end('Error : ' + err);
+            });;
         return res.status(404).end('command not found');
-    }
 
-    axios
-        .post(
-            `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
-            {
-                chat_id: message.chat.id,
-                text: 'Hey, this is pedro. ' + message.text
-            }
-        )
-        .then(response => {
-            console.log('Message posted : ', response);
-            res.status(200).end('ok');
-        })
-        .catch(err => {
-            console.log('Error : ' + err);
-            res.status(500).end('Error : ' + err);
-        });
+    } else {
+        axios
+            .post(
+                `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
+                {
+                    chat_id: message.chat.id,
+                    text: 'Hey, this is Pedro. ' + message.text
+                }
+            )
+            .then(response => {
+                console.log('Message posted : ', response);
+                res.status(200).end('ok');
+            })
+            .catch(err => {
+                console.log('Error : ' + err);
+                res.status(500).end('Error : ' + err);
+            });
+    }
 });
 
 app.listen(process.env.PORT || 3000, function() {
