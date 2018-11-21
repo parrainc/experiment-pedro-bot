@@ -25,7 +25,7 @@ app.post('/new-message', function(req, res) {
 
     axios
         .post(
-            'https://api.telegram.org/[PEDRO_BOT_API_KEY]/sendMessage', 
+            'https://api.telegram.org/'+ process.env.PEDRO_BOT_API_KEY+'/sendMessage', 
             {
                 chat_id: message.chat.id,
                 text: 'Hola, Soy Pedro'
