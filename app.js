@@ -11,6 +11,10 @@ app.use(
     })
 );
 
+app.get('/', function(req, resp) {
+    document.write('Hello, this is pedro bot home page.');
+});
+
 app.post('/new-message', function(req, res) {
     const { message } = req.body;
 
