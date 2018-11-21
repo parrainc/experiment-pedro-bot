@@ -4,13 +4,13 @@ var bodyParser = require('body-parser');
 var app = express();
 const axios = require('axios');
 const listOfCommands = [
-    'dialgo',
-    'pizza',
-    'relaja',
-    'comparte',
-    'opina',
-    'ataca',
-    'rh'
+    '/dialgo',
+    '/pizza',
+    '/relaja',
+    '/comparte',
+    '/opina',
+    '/ataca',
+    '/rh'
 ];
 
 app.use(bodyParser.json());
@@ -32,7 +32,7 @@ app.post('/new-message', function(req, res) {
         return res.status(400).end('payload is undefined!');
     }
 
-    if (listOfCommands.filter(command => command.endsWith(message.text.toLowerCase())) < 1) {
+    if (listOfCommands.includes(message.text.toLowerCase()) < 1) {
         axios
             .post(
                 `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`,
@@ -44,12 +44,15 @@ app.post('/new-message', function(req, res) {
             .then(response => {
                 console.log('Invalid command : ', response);
                 res.status(404).end('command not found');
+                return res.status(404).end('command not found');
             })
             .catch(err => {
                 console.log('Error : ' + err);
                 res.status(500).end('Error : ' + err);
-            });;
-        return res.status(404).end('command not found');
+                return res.status(404).end('command not found');
+            });
+
+            return res.status(404).end('command not found');
 
     } else {
         axios
