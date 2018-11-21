@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 const axios = require('axios');
-const commands = require('./commands')
+const commands = require('./commands');
 
 app.use(bodyParser.json());
 app.use(

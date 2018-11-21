@@ -1,4 +1,4 @@
-export const listOfCommands = [
+const listOfCommands = [
     '/dialgo',
     '/pizza',
     '/relaja',
@@ -8,7 +8,7 @@ export const listOfCommands = [
     '/rh'
 ];
 
-export const interactions = [
+const interactions = [
     {
         'instruction': 'di algo',
         'response': 'Señores, dejen el relajo'
