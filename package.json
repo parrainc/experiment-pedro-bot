@@ -1,0 +1,31 @@
+{
+  "name": "pedro-bot",
+  "version": "1.0.0",
+  "description": "This is the pedro bot server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parrainc/experiment-pedro-bot.git"
+  },
+  "keywords": [
+    "node",
+    "telegram-bot",
+    "webhook",
+    "pedro"
+  ],
+  "author": "Carlos Parra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/parrainc/experiment-pedro-bot/issues"
+  },
+  "homepage": "https://github.com/parrainc/experiment-pedro-bot#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
