@@ -101,22 +101,22 @@ app.post('/new-message', function(req, res) {
                     });
 
             } else {
-                axios
-                    .post(
-                        `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
-                        {
-                            chat_id: message.chat.id,
-                            text: 'Me dijiste algo mmg?'
-                        }
-                    )
-                    .then(response => {
-                        console.log('Message posted : ', response);
-                        res.status(200).end('ok');
-                    })
-                    .catch(err => {
-                        console.log('Error on posting message : ' + err);
-                        res.status(500).end('Error : ' + err);
-                    });
+                // axios
+                //     .post(
+                //         `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                //         {
+                //             chat_id: message.chat.id,
+                //             text: 'Me dijiste algo mmg?'
+                //         }
+                //     )
+                //     .then(response => {
+                //         console.log('Message posted : ', response);
+                //         res.status(200).end('ok');
+                //     })
+                //     .catch(err => {
+                //         console.log('Error on posting message : ' + err);
+                //         res.status(500).end('Error : ' + err);
+                //     });
 
                 console.log('caller: ' + caller);
                 console.log('actualInstruction: ' + actualInstruction);
