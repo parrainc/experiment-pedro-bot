@@ -4,17 +4,18 @@ var bodyParser = require('body-parser');
 var app = express();
 const axios = require('axios');
 //const commands = require('./commands');
-const listOfCommands = [
-    '/dialgo',
-    '/pizza',
-    '/relaja',
-    '/comparte',
-    '/opina',
-    '/ataca',
-    '/rh'
-];
 
 const interactions = [
+    {
+        'instruction': 'klk',
+        'response': `Dame lu manito. Soy Pedro Bot. Mi username es @pedromonzonbot por si me quieren dar mention. 
+        Para hablar conmigo escribe mi nombre y una instruccion. ejemplo: Pedro di algo.
+        Algunas de las opciones validas son (descubre las otras): 
+        - di algo
+        - quieres pizza
+        - rh
+        - mmg`
+    },
     {
         'instruction': 'di algo',
         'response': 'Señores, dejen el relajo'
@@ -31,6 +32,22 @@ const interactions = [
         'instruction': 'opina',
         'response': 'Tu no sabe lo que me paso ahorita'
     },
+    {
+        'instruction': 'eres chica',
+        'response': 'Sea mas serio'
+    },
+    {
+        'instruction': 'mmg',
+        'response': 'Te voy a reportar con Recursos Humanos '
+    },
+    {
+        'instruction': 'ya compramos la pistola',
+        'response': 'Me estas amenazando de muerte y diciendo cosas feas'
+    },
+    {
+        'instruction': 'maricon',
+        'response': 'Sea mas serio'
+    }
 ];
 
 app.use(bodyParser.json());
@@ -51,27 +68,6 @@ app.post('/new-message', function(req, res) {
     if (!message) {
         return res.end('message is undefined!');
     }
-
-    //interact with pedro by using commands.
-    if (listOfCommands.find(content => message.text.toLowerCase().includes(content)) !== undefined) {
-        axios
-            .post(
-                `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
-                {
-                    chat_id: message.chat.id,
-                    text: 'Hey, I am Pedro bot :) '
-                }
-            )
-            .then(response => {
-                console.log('Message posted : ', response);
-                res.status(200).end('ok');
-            })
-            .catch(err => {
-                console.log('Error on posting message : ' + err);
-                res.status(500).end('Error : ' + err);
-            });
-
-    } 
     
     //interact with pedro by custom interactions.
     if (message.text.toLowerCase().startsWith('pedro') 
@@ -81,6 +77,7 @@ app.post('/new-message', function(req, res) {
             let actualInstruction = message.text.toLowerCase().substr(caller.length).trimLeft();
             let botResponse = interactions.find(interaction => interaction.instruction.includes(actualInstruction));
 
+            console.log('message: ' + JSON.stringify(message));
             console.log('caller: ' + caller);
             console.log('actualInstruction: ' + actualInstruction);
             console.log('botResponse: ' + JSON.stringify(botResponse));
@@ -104,33 +101,55 @@ app.post('/new-message', function(req, res) {
                     });
 
             } else {
-                // axios
-                //     .post(
-                //         `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
-                //         {
-                //             chat_id: message.chat.id,
-                //             text: 'Me dijiste algo mmg?'
-                //         }
-                //     )
-                //     .then(response => {
-                //         console.log('Message posted : ', response);
-                //         res.status(200).end('ok');
-                //     })
-                //     .catch(err => {
-                //         console.log('Error on posting message : ' + err);
-                //         res.status(500).end('Error : ' + err);
-                //     });
+                axios
+                    .post(
+                        `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                        {
+                            chat_id: message.chat.id,
+                            text: 'Me dijiste algo mmg?'
+                        }
+                    )
+                    .then(response => {
+                        console.log('Message posted : ', response);
+                        res.status(200).end('ok');
+                    })
+                    .catch(err => {
+                        console.log('Error on posting message : ' + err);
+                        res.status(500).end('Error : ' + err);
+                    });
 
                 console.log('caller: ' + caller);
                 console.log('actualInstruction: ' + actualInstruction);
                 console.log('botResponse: ' + botResponse);
 
-                return res.status(404).end('command not found : ' + actualInstruction);          
+                return res.status(404).end('instruction not found : ' + actualInstruction);          
             }
-    } 
-    else {
+    } else {
         return res.status(404).end('neither command nor instruction was found');
     }
+
+    /*
+    //interact with pedro by using commands.
+    if (listOfCommands.find(content => message.text.toLowerCase().includes(content)) !== undefined) {
+        axios
+            .post(
+                `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                {
+                    chat_id: message.chat.id,
+                    text: 'Hey, I am Pedro bot :) '
+                }
+            )
+            .then(response => {
+                console.log('Message posted : ', response);
+                res.status(200).end('ok');
+            })
+            .catch(err => {
+                console.log('Error on posting message : ' + err);
+                res.status(500).end('Error : ' + err);
+            });
+
+    }
+    */
 });
 
 app.listen(process.env.PORT || 3000, function() {
