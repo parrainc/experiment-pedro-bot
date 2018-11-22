@@ -8,13 +8,13 @@ const axios = require('axios');
 const interactions = [
     {
         'instruction': 'klk',
-        'response': `Dame lu manito. Soy Pedro Bot. Mi username es @pedromonzonbot por si me quieren dar mention. 
-        Para hablar conmigo escribe mi nombre y una instruccion. ejemplo: Pedro di algo.
-        Algunas de las opciones validas son (descubre las otras): 
-        - di algo
-        - quieres pizza
-        - rh
-        - mmg`
+        'response': `Dame lu manito. Soy Pedro Bot :) Mi username es @pedromonzonbot por si me quieren dar mention. 
+Para hablar conmigo escribe mi nombre y una instruccion. ejemplo: Pedro di algo.
+Algunas de las opciones validas son (descubre las otras): 
+- di algo
+- quieres pizza
+- rh
+- mmg`
     },
     {
         'instruction': 'di algo',
@@ -47,6 +47,10 @@ const interactions = [
     {
         'instruction': 'maricon',
         'response': 'Sea mas serio'
+    },
+    {
+        'instruction': 'version',
+        'response': 'Soy un toyo, aun sigo en modo experimental :('
     }
 ];
 
@@ -62,11 +66,15 @@ app.get('/', function(req, resp) {
     resp.end('nothing to do here');
 });
 
+app.post('/reset-count', function(req, res) {
+    return res.status(200).end();
+});
+
 app.post('/new-message', function(req, res) {
     const { message } = req.body;
 
     if (!message) {
-        return res.end('message is undefined!');
+        return res.status(200).end('message is undefined!');
     }
     
     //interact with pedro by custom interactions.
@@ -97,35 +105,35 @@ app.post('/new-message', function(req, res) {
                     })
                     .catch(err => {
                         console.log('Error on posting message : ' + err);
-                        res.status(500).end('Error : ' + err);
+                        res.status(200).end('Error : ' + err);
                     });
 
             } else {
-                // axios
-                //     .post(
-                //         `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
-                //         {
-                //             chat_id: message.chat.id,
-                //             text: 'Me dijiste algo mmg?'
-                //         }
-                //     )
-                //     .then(response => {
-                //         console.log('Message posted : ', response);
-                //         res.status(200).end('ok');
-                //     })
-                //     .catch(err => {
-                //         console.log('Error on posting message : ' + err);
-                //         res.status(500).end('Error : ' + err);
-                //     });
+                axios
+                    .post(
+                        `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                        {
+                            chat_id: message.chat.id,
+                            text: 'A que te refieres @' + message.from.username + '?'
+                        }
+                    )
+                    .then(response => {
+                        console.log('Message posted : ', response);
+                        res.status(200).end('ok');
+                    })
+                    .catch(err => {
+                        console.log('Error on posting message : ' + err);
+                        res.status(200).end('Error : ' + err);
+                    });
 
                 console.log('caller: ' + caller);
                 console.log('actualInstruction: ' + actualInstruction);
                 console.log('botResponse: ' + botResponse);
 
-                return res.status(404).end('instruction not found : ' + actualInstruction);          
+                return res.status(200).end('instruction not found : ' + actualInstruction);          
             }
     } else {
-        return res.status(404).end('neither command nor instruction was found');
+        return res.status(200).end('neither command nor instruction was found');
     }
 
     /*
@@ -150,10 +158,6 @@ app.post('/new-message', function(req, res) {
 
     }
     */
-});
-
-app.post('/reset-count', function(req, res) {
-    return res.status(200).end();
 });
 
 app.listen(process.env.PORT || 3000, function() {
