@@ -81,6 +81,10 @@ app.post('/new-message', function(req, res) {
             let actualInstruction = message.text.toLowerCase().substr(caller.length).trimLeft();
             let botResponse = interactions.find(interaction => interaction.instruction.includes(actualInstruction));
 
+            console.log('caller: ' + caller);
+            console.log('actualInstruction: ' + actualInstruction);
+            console.log('botResponse: ' + JSON.stringify(botResponse));
+
             if (botResponse !== undefined) {
                 axios
                     .post(
@@ -100,22 +104,26 @@ app.post('/new-message', function(req, res) {
                     });
 
             } else {
-                axios
-                    .post(
-                        `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
-                        {
-                            chat_id: message.chat.id,
-                            text: 'Me dijiste algo mmg?'
-                        }
-                    )
-                    .then(response => {
-                        console.log('Message posted : ', response);
-                        res.status(200).end('ok');
-                    })
-                    .catch(err => {
-                        console.log('Error on posting message : ' + err);
-                        res.status(500).end('Error : ' + err);
-                    });
+                // axios
+                //     .post(
+                //         `https://api.telegram.org/${process.env.PEDRO_BOT_API_KEY}/sendMessage`, 
+                //         {
+                //             chat_id: message.chat.id,
+                //             text: 'Me dijiste algo mmg?'
+                //         }
+                //     )
+                //     .then(response => {
+                //         console.log('Message posted : ', response);
+                //         res.status(200).end('ok');
+                //     })
+                //     .catch(err => {
+                //         console.log('Error on posting message : ' + err);
+                //         res.status(500).end('Error : ' + err);
+                //     });
+
+                console.log('caller: ' + caller);
+                console.log('actualInstruction: ' + actualInstruction);
+                console.log('botResponse: ' + botResponse);
 
                 return res.status(404).end('command not found : ' + actualInstruction);          
             }
