@@ -152,6 +152,10 @@ app.post('/new-message', function(req, res) {
     */
 });
 
+app.post('/reset-count', function(req, res) {
+    return 1;
+});
+
 app.listen(process.env.PORT || 3000, function() {
     console.log("Pedro's bot is listening! Have fun.");
 });
